@@ -3,6 +3,9 @@ import moment from 'moment';
 import { List, ListItem } from '@material-ui/core';
 import styled from 'styled-components';
 import { useState, useMemo } from 'react';
+import { async } from 'q';
+import dotenv from 'dotenv';
+
 
 const Container = styled.div`
   height: calc(100% - 56px);
@@ -51,12 +54,18 @@ const MessageDate = styled.div`
 
 function ChatsList() {
   const [chats, setChats] = useState<any[]>([]);
-
-  useMemo(async () => {
-    const body = await fetch(`${process.env.REACT_APP_SERVER_URL}/chats`);
-    const chats = await body.json();
+  useMemo(async()=>{
+    const body=await fetch(`http://localhost:4000/chats`);
+    console.log('async body :',body);
+    const chats=await body.json();
+    console.log('chats :', chats);
     setChats(chats);
-  }, []);
+  },[]);
+  // useMemo(async () => {
+  //   const body = await fetch(`${process.env.REACT_APP_SERVER_URL}/chats`);
+  //   const chats = await body.json();
+  //   setChats(chats);
+  // }, []);
 
   return (
     <Container>
@@ -82,33 +91,7 @@ function ChatsList() {
       </StyledList>
     </Container>
   );
-}
+};
 
-// function ChatsList() {
-//   return (
-//     <Container>
-//       <StyledList>
-//         {chats.map(chat => (
-//           <StyledListItem key={chat.id} button>
-//             {/* key영역에 id값을 부여 함으로써 각 엘리먼트를 구별할 수 있도록 해준다. */}
-//             <ChatPicture src={chat.picture} alt="Profile" />
-//             <ChatInfo>
-//               <ChatName>{chat.name}</ChatName>
-//               {/* return 값이 없을 수 있는 상황에서는 반드시 null인지 undifineded인지 유효성 검사를 해주어야 한다 */}
-//               {chat.lastMessage && (
-//                 <React.Fragment>
-//                   <MessageContent>{chat.lastMessage.content}</MessageContent>
-//                   <MessageDate>
-//                     {moment(chat.lastMessage.createdAt).format('HH:mm')}
-//                   </MessageDate>
-//                 </React.Fragment>
-//               )}
-//             </ChatInfo>
-//           </StyledListItem>
-//         ))}
-//       </StyledList>
-//     </Container>
-//   );
-// }
 
 export default ChatsList;
